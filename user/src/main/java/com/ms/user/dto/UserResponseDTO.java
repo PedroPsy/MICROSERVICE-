@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public record UserResponseDTO (UUID userId,
                              @NotBlank String name,
-                             @NotBlank @Email String email) {
+                             @NotBlank @Email  String email) {
 }

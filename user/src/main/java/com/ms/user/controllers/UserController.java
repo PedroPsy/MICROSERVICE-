@@ -49,4 +49,16 @@ public class UserController {
         BeanUtils.copyProperties(userRecordDto, userModel);
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id) {
+        var optionalUser = userService.findById(id);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+        }
+
+        userService.delete(optionalUser.get());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
+    }
+
+
 }
