@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.beans.Transient;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -25,4 +27,8 @@ public class UserService {
     public List<UserModel> findAll() {
         return userRepository.findAll();
     }
+    public Optional<UserModel> findById(UUID id) {
+        return userRepository.findById(id);
+    }
+
 }

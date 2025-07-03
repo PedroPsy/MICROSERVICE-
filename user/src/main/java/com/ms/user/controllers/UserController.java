@@ -1,20 +1,21 @@
 package com.ms.user.controllers;
 
 import com.ms.user.dto.UserRecordDto;
+import com.ms.user.dto.UserResponseDTO;
+import com.ms.user.mappers.UserMapper;
 import com.ms.user.models.UserModel;
 import com.ms.user.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     final UserService userService;
@@ -23,15 +24,29 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<UserModel> saveUser(@RequestBody @Valid UserRecordDto userRecordDto) {
-        var userModel = new UserModel();
-        BeanUtils.copyProperties(userRecordDto, userModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userModel));
+    @PostMapping
+    public ResponseEntity<UserResponseDTO> saveUser(@RequestBody @Valid UserRecordDto userRecordDto) {
+        var userModel = UserMapper.toModel(userRecordDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(userService.save(userModel)));
+
     }
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userService.findAll();
         return ResponseEntity.ok(users);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUser(
+            @PathVariable(value = "id") UUID id,
+            @RequestBody @Valid UserRecordDto userRecordDto) {
+
+        var optionalUser = userService.findById(id);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
+        }
+
+        var userModel = optionalUser.get();
+        BeanUtils.copyProperties(userRecordDto, userModel);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
     }
 }
