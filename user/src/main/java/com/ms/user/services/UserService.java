@@ -6,8 +6,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

@@ -2,6 +2,7 @@ package com.ms.user.controllers;
 
 import com.ms.user.dto.UserRecordDto;
 import com.ms.user.dto.UserResponseDTO;
+import com.ms.user.exception.UserNotFoundException;
 import com.ms.user.mappers.UserMapper;
 import com.ms.user.models.UserModel;
 import com.ms.user.services.UserService;
@@ -50,15 +51,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") UUID id) {
-        var optionalUser = userService.findById(id);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
-        }
-
-        userService.delete(optionalUser.get());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        var user = userService.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + id + " não encontrado."));
+        userService.delete(user);
+        return ResponseEntity.noContent().build();
     }
-
-
 }
