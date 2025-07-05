@@ -34,21 +34,20 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userService.findAll();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok().body(users);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUser(
-            @PathVariable(value = "id") UUID id,
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable UUID id,
             @RequestBody @Valid UserRecordDto userRecordDto) {
 
-        var optionalUser = userService.findById(id);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
-        }
+        userService.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + id + " não encontrado."));
 
-        var userModel = optionalUser.get();
-        BeanUtils.copyProperties(userRecordDto, userModel);
-        return ResponseEntity.status(HttpStatus.OK).body(userService.save(userModel));
+        var userModel = UserMapper.toModel(id, userRecordDto);
+        var updatedUser = userService.save(userModel);
+
+        return ResponseEntity.ok(UserMapper.toDto(updatedUser));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
