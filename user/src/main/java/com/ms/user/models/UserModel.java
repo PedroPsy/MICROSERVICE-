@@ -14,6 +14,7 @@ public class UserModel implements Serializable {
     private UUID userId;
     private String name;
     private String email;
+    private boolean deleted = false;
 
     public void setUserId(UUID userId) {
         this.userId = userId;
@@ -29,6 +30,10 @@ public class UserModel implements Serializable {
 
     public UUID getUserId() {
         return userId;
+    }
+    public boolean isDeleted() { return deleted;}
+    public void setDeleted () {
+        this.deleted = true;
     }
 
     public String getName() {

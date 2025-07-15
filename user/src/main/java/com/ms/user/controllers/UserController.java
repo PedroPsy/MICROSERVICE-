@@ -7,7 +7,6 @@ import com.ms.user.mappers.UserMapper;
 import com.ms.user.models.UserModel;
 import com.ms.user.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
