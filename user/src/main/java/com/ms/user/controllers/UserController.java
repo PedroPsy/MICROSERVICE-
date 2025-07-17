@@ -1,7 +1,6 @@
 package com.ms.user.controllers;
 
-import com.ms.user.dto.UserRecordDto;
-import com.ms.user.dto.UserResponseDTO;
+import com.ms.user.dto.UserDto;
 import com.ms.user.exception.UserNotFoundException;
 import com.ms.user.mappers.UserMapper;
 import com.ms.user.models.UserModel;
@@ -25,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> saveUser(@RequestBody @Valid UserRecordDto userRecordDto) {
+    public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserDto userRecordDto) {
         var userModel = UserMapper.toModel(userRecordDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDto(userService.save(userModel)));
 
@@ -36,9 +35,9 @@ public class UserController {
         return ResponseEntity.ok().body(users);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(
+    public ResponseEntity<UserDto> updateUser(
             @PathVariable UUID id,
-            @RequestBody @Valid UserRecordDto userRecordDto) {
+            @RequestBody @Valid UserDto userRecordDto) {
 
         userService.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + id + " não encontrado."));
